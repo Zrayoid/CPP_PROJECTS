@@ -8,7 +8,7 @@ This repository documents my journey of turning programming concepts into workin
 
 | Level | Project | Description | Status |
 |---|---|---|---|
-| Level 1 | [Number Guessing Game](./Mini_Projects_level1/README.md) | A console game where players guess a randomly generated number with helpful hints. | Completed |
+| Level 1 | [Number Guessing Game](./Mini_Projects_level1/Number_Guessing_Game.cpp) | A console game where players guess a randomly generated number with helpful hints. | Completed |
 
 ## 🛠️ Technologies
 
