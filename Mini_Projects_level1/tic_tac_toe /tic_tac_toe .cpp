@@ -1,117 +1,93 @@
 #include <iostream>
+#include <limits>
+#include <string>
+#include <sstream>
 using namespace std;
 
 void Board(char (*arr)[3])
 {
     for (int i = 0; i < 3; i++)
     {
-        for (int j = 0; j < 3; j++)
-        {
+        cout << " ";
 
-            cout << arr[i][j] << "  ";
+        for ( int j = 0; j < 3; j++)
+        {
+            cout << arr[i][j];
+            
+            if ( j < 2)
+                cout << " | ";
         }
-        cout << endl;
+
+        cout << "\n";
+
+        if ( i < 2)
+            cout <<  "---+---+---\n";
     }
+
+    cout << "\n";
 }
 
 int SomeoneWon(char (*array)[3])
 {
-    int Xcount = 0;
-    int Ocount = 0;
-
+    // check rows and columns
     for (int i = 0; i < 3; i++)
     {
-        Xcount = 0;
-        Ocount = 0;
-        for (int j = 0; j < 3; j++)
+        // Horizontal check
+        if (array[i][0] == array[i][1] &&
+            array[i][1] == array[i][2])
         {
-
-            if (array[i][j] == 'X')
-            {
-                Xcount++;
-                if (Xcount == 3)
-                {
-                    return 1;
-                }
-            }
-            if (array[i][j] == 'O')
-            {
-                Ocount++;
-                if (Ocount == 3)
-                {
-                    return 2;
-                }
-            }
-        }
-    }
-    for (int j = 0; j < 3; j++)
-    {
-        Xcount = 0;
-        Ocount = 0;
-        for (int i = 0; i < 3; i++)
-        {
-            if (array[j][i] == 'X')
-            {
-                Xcount++;
-                if (Xcount == 3)
-                {
-                    return 1;
-                }
-            }
-            if (array[j][i] == 'O')
-            {
-                Ocount++;
-                if (Ocount == 3)
-                {
-                    return 2;
-                }
-            }
-        }
-    }
-
-    Xcount = 0;
-    Ocount = 0;
-    for (int i = 0; i < 3; i++)
-    {
-
-        if (array[i][i] == 'X')
-        {
-            Xcount++;
-            if (Xcount == 3)
+            if (array[i][0] == 'X')
             {
                 return 1;
             }
+            if (array[i][0] == 'O')
+            {
+                return 2;
+            }
         }
-        if (array[i][i] == 'O')
+
+        // Vertical check
+        if (array[0][i] == array[1][i] &&
+            array[1][i] == array[2][i])
         {
-            Ocount++;
-            if (Ocount == 3)
+            if (array[0][i] == 'X')
+            {
+                return 1;
+            }
+
+            if (array[0][i] == 'O')
             {
                 return 2;
             }
         }
     }
-
-    Xcount = 0;
-    Ocount = 0;
-
-    for (int i = 0; i < 3; i++)
+    // Main diagonal
+    if (array[0][0] == array[1][1] &&
+        array[1][1] == array[2][2])
     {
-        if (array[i][2 - i] == 'X')
+        if (array[1][1] == 'X')
         {
-            Xcount++;
-            if (Xcount == 3)
-            {
-                return 1;
-            }
+            return 1;
         }
-        if (array[i][2 - i] == 'O')
+
+        if (array[1][1] == 'O')
         {
-            Ocount++;
-            if (Ocount == 3)
-            {
-                return 2;
-            }
+            return 2;
+        }
+    }
+
+    // Opposite diagonal
+    if (array[0][2] == array[1][1] &&
+        array[1][1] == array[2][0])
+    {
+        if (array[1][1] == 'X')
+        {
+            return 1;
+        }
+
+        if (array[1][1] == 'O')
+        {
+            return 2;
         }
     }
 
@@ -120,79 +96,78 @@ int SomeoneWon(char (*array)[3])
 
 void turn(int count)
 {
-    if (count % 2 == 0)
-    {
-        cout << " X's turn.\n";
-    }
-    else
-        cout << " O's turn.\n";
+    cout << ((count % 2 == 0) ? " X's turn.\n" : " O's turn.\n");
 }
 
 int inputvalidation(int *count)
 {
 
-    int value = 0;
+    int value;
+    string line;
+
     turn(*count);
-    cout << " Cout enter the position: ";
-    if (cin >> value)
+
+    cout << " Enter the position: ";
+    getline(cin, line);
+
+    stringstream input(line);
+
+    if (!(input >> value))
     {
-        if (value >= 10 || value < 0)
-        {
-            cout << " Invalid input: \n";
-        }
-        else
-        {
-            return value;
-        }
-    }
-    else
-    {
-        cin.clear();
-        cin.ignore(1000, '\n');
-        cout << " wrong input.\n";
+        cout << " Invalid input. Enter a number.\n";
+        return 0;
     }
 
-    return 0;
+    input >> ws;
+
+    if (!input.eof())
+    {
+        cout << " Invalid input. Enter only one integer.\n";
+        return 0;
+    }
+
+    if (value < 1 || value > 9)
+    {
+        cout << " Invalid Position choose between 1 and 9.\n";
+        return 0;
+    }
+
+    return value;
 }
 
 int InputOnBoard(char (*ptrArray)[3], int *count)
 {
     int winVal = 0;
-    while ( winVal != 1 && winVal != 2 && *count != 9 )
+
+    while (winVal == 0 && *count < 9)
     {
         int value = inputvalidation(count);
+
         if (value == 0)
         {
-            cout << "Enter a valid input.\n";
+            cout << " Enter a valid input.\n";
+            continue;
         }
-        else
-        {
-            int row, column;
-            row = (value - 1) / 3;
-            column = (value - 1) % 3;
-            if (ptrArray[row][column] == 'X' || ptrArray[row][column] == 'O')
-            {
-                cout << " position taken enter a different one.\n";
-            }
-            else
-            {
-                if (*count % 2 == 0)
-                {
-                    ptrArray[row][column] = 'X';
-                    Board(ptrArray);
-                    ++*count;
-                    winVal = SomeoneWon(ptrArray);
-                }
-                else
-                {
-                    ptrArray[row][column] = 'O';
-                    Board(ptrArray);
-                    ++*count;
-                    winVal = SomeoneWon(ptrArray);
 
-                }
-            }
+        int row = (value - 1) / 3;
+        int column = (value - 1) % 3;
+
+        if (ptrArray[row][column] == 'X' ||
+            ptrArray[row][column] == 'O')
+        {
+            cout << " position taken. Enter a different one.\n";
+            continue;
         }
+         
+        char symbol = (*count % 2 == 0) ? 'X' : 'O';
+        
+        ptrArray[row][column] = symbol;
+
+        Board( ptrArray );
+
+        ++(*count);
+
+        winVal = SomeoneWon(ptrArray);
     }
 
     return winVal;
@@ -209,15 +184,15 @@ int main()
     Board(arr);
     int result = InputOnBoard(arr, &counter);
 
-    if ( result == 1 )
+    if (result == 1)
     {
         cout << " X won.";
     }
-    else if ( result == 2 )
+    else if (result == 2)
     {
         cout << " O won.";
     }
-    else if ( result == 0)
+    else if (result == 0)
     {
         cout << " Draw.";
     }
