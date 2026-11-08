@@ -1,90 +1,28 @@
-# 🎮 Tic-Tac-Toe (C++)
+# Tic-Tac-Toe – C++
 
-A simple two-player Tic-Tac-Toe game built using C++.
+A two-player Tic-Tac-Toe game built using C++. Players take turns placing **X** and **O** on a 3×3 board. The first player to align three identical symbols horizontally, vertically, or diagonally wins. If all nine positions are filled without a winner, the game ends in a draw.
 
-## 📌 Game Overview
+## Previous Version
 
-Tic-Tac-Toe is a two-player game played on a 3×3 grid. Players take turns marking empty positions on the board. The first player to align three of their marks wins.
+The initial version used separate functions for displaying the board, validating input, checking winners, managing turns, and placing symbols. It worked, but some logic was repetitive, the board display was basic, and input validation needed improvement.
 
-## 🎯 Rules
+## Improvements
 
-1. The game is played by two players: **X** and **O**.
-2. Player X always takes the first turn.
-3. Players take turns choosing a position from **1 to 9**.
-4. Each position can only be selected once.
-5. A player wins by placing three of their marks in:
-   - A horizontal row
-   - A vertical column
-   - Either diagonal
-6. If all nine positions are filled and neither player wins, the game ends in a draw.
+- **Input validation:** Reworked validation using `getline()`, `stringstream`, and stream checks to validate the entire input line. Rejects invalid formats, extra characters, decimals, and out-of-range positions.
+- **Win detection:** Simplified winner checking by directly comparing rows, columns, and diagonals instead of maintaining multiple counters.
+- **Game logic:** Removed duplicated X/O placement code using the conditional operator and `continue`.
+- **Board display:** Added cleaner spacing and grid separators.
+- **Turn display:** Simplified player selection using the conditional operator.
 
-## 🕹️ Board Layout
+## What I Learned
 
-At the beginning, the board looks like this:
+- Passing arrays to functions using pointers.
+- Working with pointers and dereferencing.
+- Input streams, `getline()`, and `stringstream`.
+- Validating complete user input.
+- Using `continue` to control loops.
+- Simplifying conditional logic.
+- Checking winning combinations in a 2D array.
+- Writing reusable functions and reducing code duplication.
 
-```text
-1  2  3
-4  5  6
-7  8  9
-```
-
-Enter the number corresponding to the position where you want to place your mark.
-
-## 🏆 Winning Examples
-
-**Horizontal win**
-```text
-X  X  X
-4  O  6
-O  8  9
-```
-
-**Vertical win**
-```text
-X  2  O
-X  O  6
-X  8  9
-```
-
-**Diagonal win**
-```text
-X  2  O
-4  X  6
-O  8  X
-```
-
-## ⚠️ Input Rules
-
-- Only numbers from **1 to 9** are accepted.
-- Letters and other non-numeric inputs are rejected.
-- Positions already occupied by X or O cannot be selected.
-- Invalid moves do not consume a turn.
-
-## 🛠️ Technologies
-
-- C++
-- Standard Input/Output (`iostream`)
-- 2D Character Arrays
-- Functions and Pointers
-- Loops and Conditional Statements
-
-## 🚀 Current Features
-
-- Two-player gameplay
-- Interactive 3×3 board
-- Automatic turn switching
-- Input validation
-- Prevention of occupied-position selection
-- Horizontal, vertical, and diagonal win detection
-- Draw detection
-
-## 🔮 Future Improvements
-
-- Code refactoring and cleanup
-- Improved input handling
-- Option to restart the game
-- Better board formatting
-
----
-
-*Built as part of my C++ programming journey.*
+**Main takeaway:** Improving a working program is just as important as building it. This project helped me understand defensive programming, cleaner logic, and better input handling.
