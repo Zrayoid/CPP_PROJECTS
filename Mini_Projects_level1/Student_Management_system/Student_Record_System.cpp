@@ -3,6 +3,8 @@
 #include <cctype>
 #include <sstream>
 #include <limits>
+#include <cstdio>
+#include <fstream>
 using namespace std;
 
 struct Student
@@ -47,7 +49,7 @@ float getValidMarks()
         getline(cin, input);
         stringstream ss(input);
 
-        if (!(ss >> marks) || !ss.eof()  || marks > 100 || marks < 0)
+        if (!(ss >> marks) || (ss >> ws, ss.peek() != EOF) || marks > 100 || marks < 0)
         {
             cout << " Invalid Marks! Try Again.";
         }
@@ -162,19 +164,17 @@ string getValidCourse()
 int getValidCount(int count)
 {
     int Ecount;
+    string input;
     while (true)
     {
-        cout << " Enter the number of entries: ";
-        cin >> Ecount;
-        if (cin.fail() || Ecount < 1 || Ecount + count > 50)
+        getline(cin, input);
+        stringstream ss(input);
+        if (!(ss >> Ecount) || (ss >> ws, ss.peek() != EOF) || Ecount < 1 || Ecount + count > 50)
         {
             cout << " Invalid input! Try Again!\n";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
         else
         {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             break;
         }
     }
@@ -230,6 +230,7 @@ void viewStudentsData(Student *sd, int count)
     }
     else
     {
+        cout << " Students Data" << endl;
         for (int i = 0; i < count; i++)
         {
             cout << " ID:" << sd[i].ID << endl
@@ -237,6 +238,7 @@ void viewStudentsData(Student *sd, int count)
                  << " Age: " << sd[i].age << endl
                  << " Course: " << sd[i].course << endl
                  << " Marks: " << sd[i].marks << endl;
+            cout << endl;
         }
     }
 }
@@ -254,6 +256,8 @@ int find_student(int id, Student *sd, int count)
     }
     return -1;
 }
+
+//
 
 // data of searched student
 void searchedStudent(Student *sd, int count)
@@ -329,17 +333,47 @@ void averageMarks(Student *sd, int count)
 }
 
 // Update marks
-void updatedMarks(Student *sd, int count, int id)
+void updatedMarks(Student *sd, int count)
 {
     int index;
+    int id;
     if (count != 0)
     {
+        id = getValidId();
         index = find_student(id, sd, count);
 
         if (index != -1)
         {
             float newMarks = getValidMarks();
             sd[index].marks = newMarks;
+        }
+        else
+        {
+            cout << " Student not found.\n";
+        }
+    }
+    else
+        cout << " No student records available!!\n";
+}
+
+// Deleting student
+void deleteStudent(Student *sd, int *count)
+{
+    int index;
+    int id;
+    if (*count != 0)
+    {
+        id = getValidId();
+        index = find_student(id, sd, *count);
+
+        if (index != -1)
+        {
+            for (int i = index; i < *count - 1; i++)
+            {
+                sd[i] = sd[i + 1];
+            }
+            *count -= 1;
+            cout << " Student deleted successfully!\n";
         }
         else
         {
@@ -371,8 +405,8 @@ void operationCenter(Student *sd, int *count)
             choice = 0;
             getline(cin, input);
             stringstream ss(input);
-            
-            if (!(ss >> choice) || ss.peek() != EOF || choice < 1 || choice > 8)
+
+            if (!(ss >> choice) || (ss >> ws, ss.peek() != EOF) || choice < 1 || choice > 8)
             {
                 cout << " Invalid choice!\n Try Again!" << endl;
             }
@@ -395,6 +429,7 @@ void operationCenter(Student *sd, int *count)
             break;
         case 4:
             // Delete
+            deleteStudent(sd, count);
             break;
         case 5:
             // Average Marks
@@ -413,12 +448,83 @@ void operationCenter(Student *sd, int *count)
     }
 }
 
+// Storing and Retreiving functions
+
+// Saving Data
+void saveData(Student sd[], int count)
+{
+    ofstream file;
+    file.open("Student.txt");
+
+    if (!file.is_open())
+    {
+        cout << " Unable to open file!\n";
+        return;
+    }
+    // file << count << ",\n";
+    for (int i = 0; i < count; i++)
+    {
+        file << sd[i].ID << ","
+             << sd[i].name << ","
+             << sd[i].age << ","
+             << sd[i].course << ","
+             << sd[i].marks << "\n";
+    }
+    file.close();
+    cout << " Data saved!\n";
+}
+
+// Retreiving Data
+void loadData(Student sd[], int &count)
+{
+    ifstream file;
+    file.open("Student.txt");
+
+    if (!file.is_open())
+    {
+        cout << " File not found!\n";
+        return;
+    }
+
+    string line;
+    while (getline(file, line) && count < 50)
+    {
+        stringstream ss(line);
+        string ID, name, age, course, marks;
+
+        getline(ss, ID, ',');
+        getline(ss, name, ',');
+        getline(ss, age, ',');
+        getline(ss, course, ',');
+        getline(ss, marks, ',');
+
+        try
+        {
+            sd[count].ID = stoi(ID);
+            sd[count].name = name;
+            sd[count].age = stoi(age);
+            sd[count].course = course;
+            sd[count].marks = stof(marks);
+            count++;
+        }
+        catch (const exception &e)
+        {
+            cout << "Invalid record skipped: " << e.what() << '\n';
+        }
+    }
+}
+
 int main()
 {
     Student studentsData[50];
     int studentEntryCount = 0;
 
+    // LoadData
+    loadData(studentsData, studentEntryCount);
     operationCenter(studentsData, &studentEntryCount);
+
+    // savedata
+    saveData(studentsData, studentEntryCount);
 
     return 0;
 }
