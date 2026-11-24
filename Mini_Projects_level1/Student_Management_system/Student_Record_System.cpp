@@ -403,6 +403,7 @@ void operationCenter(Student *sd, int *count)
                  << "8. Exit.\n";
 
             choice = 0;
+            cout << " Select an operation: ";
             getline(cin, input);
             stringstream ss(input);
 
