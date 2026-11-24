@@ -167,6 +167,7 @@ int getValidCount(int count)
     string input;
     while (true)
     {
+        cout << " Enter number of entries: ";
         getline(cin, input);
         stringstream ss(input);
         if (!(ss >> Ecount) || (ss >> ws, ss.peek() != EOF) || Ecount < 1 || Ecount + count > 50)
@@ -184,6 +185,7 @@ int getValidCount(int count)
 // Students Entry Function
 void studentsEntry(Student *sd, int *count)
 {
+   
     int dublicateCheck;
     int numberOfEntry;
     numberOfEntry = getValidCount(*count);
@@ -400,7 +402,7 @@ void operationCenter(Student *sd, int *count)
                  << " 5. Find Average Marks of the students.\n"
                  << " 6. Find the student with heighest marks.\n"
                  << " 7. View All students Data.\n"
-                 << "8. Exit.\n";
+                 << " 8. Exit.\n";
 
             choice = 0;
             cout << " Select an operation: ";
